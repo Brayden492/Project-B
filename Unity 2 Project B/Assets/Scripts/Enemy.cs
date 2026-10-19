@@ -1,6 +1,7 @@
+using TMPro;
+using UnityEditor.EditorTools;
 using UnityEngine;
 using UnityEngine.UI;
-using TMPro;
 
 public class Enemy : MonoBehaviour
 {
@@ -33,6 +34,10 @@ public class Enemy : MonoBehaviour
         // also update the killcount, only increment by one
         if (health <= 0)
         {
+            RoomsTracker roomsTracker = Object.FindFirstObjectByType<RoomsTracker>();
+
+            if (roomsTracker != null)
+                roomsTracker.EnemyDied();
             isDead = true;
             GlobalKillCount.killCount++;
             Destroy(gameObject);
