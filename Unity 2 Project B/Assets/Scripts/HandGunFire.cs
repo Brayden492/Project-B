@@ -15,6 +15,9 @@ public class HandGunFire : MonoBehaviour
     [SerializeField] bool canFire = true;
     [SerializeField] GameObject objectDetection;
 
+    [SerializeField] int damagePerShot = 10;
+    [SerializeField] float shotCooldown = 0.6f;
+
     Animator gunAnimator;
 
     void Start()
@@ -74,6 +77,17 @@ public class HandGunFire : MonoBehaviour
     {
         canFire = true;
     }
+    public void UpgradeDamage()
+    {
+        damagePerShot += 5;
+        Debug.Log("Damage upgraded to " + damagePerShot);
+    }
+
+    public void UpgradeFireRate()
+    {
+        shotCooldown = Mathf.Max(0.3f, shotCooldown - 0.1f);
+        Debug.Log("Shot cooldown is now " + shotCooldown);
+    }
 
     void Update()
     {
@@ -107,7 +121,7 @@ public class HandGunFire : MonoBehaviour
                 objectDetection.GetComponentInParent<Enemy>();
 
             if (enemy != null)
-                enemy.TakeDamage(10);
+                enemy.TakeDamage(damagePerShot);
         }
 
         yield return new WaitForSeconds(0.5f);
@@ -118,7 +132,7 @@ public class HandGunFire : MonoBehaviour
         if (extraCross != null)
             extraCross.SetActive(false);
 
-        yield return new WaitForSeconds(0.1f);
+        yield return new WaitForSeconds(Mathf.Max(0f, shotCooldown - 0.5f));
 
         canFire = true;
     }

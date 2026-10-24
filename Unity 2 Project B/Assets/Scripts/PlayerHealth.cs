@@ -33,6 +33,17 @@ public class PlayerHealth : MonoBehaviour
         UpdateHealthUI();
     }
 
+    public void UpgradeMaxHealth(int amount)
+    {
+        maxHealth += amount;
+        currentHealth += amount;
+
+        UpdateHealthUI();
+
+        Debug.Log("Max health upgraded to " + maxHealth);
+    }
+
+
     public void TakeDamage(int damage)
     {
         currentHealth -= damage;

@@ -33,6 +33,12 @@ public class RoomExit : MonoBehaviour
             return;
         }
 
+        if (!roomsTracker.UpgradeChosen)
+        {
+            Debug.Log("Choose an upgrade before leaving!");
+            return;
+        }
+
         playerEntered = true;
         roomGenerator.GenerateNextRoom();
     }
