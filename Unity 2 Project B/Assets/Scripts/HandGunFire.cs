@@ -20,16 +20,14 @@ public class HandGunFire : MonoBehaviour
 
     Animator gunAnimator;
 
-    void Start()
+    IEnumerator Start()
     {
-        // Find the spawned Player.
-        GameObject player =
-            GameObject.FindGameObjectWithTag("Player");
+        GameObject player = null;
 
-        if (player == null)
+        while (player == null)
         {
-            Debug.LogError("HandGunFire could not find the Player!");
-            return;
+            player = GameObject.FindGameObjectWithTag("Player");
+            yield return null;
         }
 
         // Find the gun Animator under the Player's camera.
@@ -79,7 +77,7 @@ public class HandGunFire : MonoBehaviour
     }
     public void UpgradeDamage()
     {
-        damagePerShot += 5;
+        damagePerShot += 10;
         Debug.Log("Damage upgraded to " + damagePerShot);
     }
 
@@ -122,6 +120,15 @@ public class HandGunFire : MonoBehaviour
 
             if (enemy != null)
                 enemy.TakeDamage(damagePerShot);
+
+            else
+            {
+                BossHealth boss =
+                    objectDetection.GetComponentInParent<BossHealth>();
+
+                if (boss != null)
+                    boss.TakeDamage(damagePerShot);
+            }
         }
 
         yield return new WaitForSeconds(0.5f);

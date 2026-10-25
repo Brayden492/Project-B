@@ -201,6 +201,7 @@ GameObject:
   - component: {fileID: 7813789441703299743}
   - component: {fileID: 1804862464889011539}
   - component: {fileID: 430340806397950524}
+  - component: {fileID: 7812277223468931685}
   m_Layer: 5
   m_Name: EnemyHealthCanvas
   m_TagString: Untagged
@@ -292,6 +293,18 @@ MonoBehaviour:
   m_BlockingMask:
     serializedVersion: 2
     m_Bits: 4294967295
+--- !u!114 &7812277223468931685
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1012481464386584833}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d71d39ff9f0fea5489505b3f2a6e8c52, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::HealthBarLookAtPlayer
 --- !u!1 &2598159285985585942
 GameObject:
   m_ObjectHideFlags: 0
@@ -560,8 +573,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4c0e833fbcbf14a49b4963dccfbb1524, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Enemy
-  health: 20
-  maxHealth: 20
+  health: 100
+  maxHealth: 100
   healthBar: {fileID: 6804682133610629969}
   isDead: 0
   healthText: {fileID: 2928701038264046017}
@@ -578,9 +591,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::BrawlerEnemy
   player: {fileID: 8519565685118313325, guid: cb4b970639a7ce543b79bfaacec26b00, type: 3}
-  moveSpeed: 3
-  attackRange: 2
-  attackDamage: 10
+  moveSpeed: 6
+  attackRange: 3
+  attackDamage: 20
   attackWindUp: 1
   attackCooldown: 1.5
   attackColor: {r: 1, g: 0, b: 0, a: 1}

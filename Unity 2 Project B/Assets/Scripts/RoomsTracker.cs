@@ -9,6 +9,8 @@ public class RoomsTracker : MonoBehaviour
 
     public bool UpgradeChosen { get; private set; }
 
+    public int ClearedRooms { get; private set; } = 0;
+
     void Awake()
     {
         upgradeManager = Object.FindFirstObjectByType<UpgradeManager>();
@@ -17,6 +19,7 @@ public class RoomsTracker : MonoBehaviour
     public void SetEnemyCount(int count)
     {
         enemiesRemaining = count;
+        Debug.Log("Enemies counted for this room: " + enemiesRemaining);
         RoomIsCleared = false;
         UpgradeChosen = false;
 
@@ -30,6 +33,7 @@ public class RoomsTracker : MonoBehaviour
             return;
 
         enemiesRemaining--;
+        Debug.Log("Enemy died! Enemies remaining: " + enemiesRemaining);
 
         if (enemiesRemaining <= 0)
         {
@@ -44,6 +48,9 @@ public class RoomsTracker : MonoBehaviour
             return;
 
         RoomIsCleared = true;
+
+        ClearedRooms++;
+        Debug.Log("Rooms cleared: " + ClearedRooms);
 
         Debug.Log("Room cleared! All enemies are defeated.");
 

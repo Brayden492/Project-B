@@ -12,6 +12,9 @@ public class RoomStuff : MonoBehaviour
     [Header("Potion")]
     [SerializeField] GameObject potionPrefab;
 
+    [Header("Boss")]
+    [SerializeField] GameObject bossPrefab;
+
     RoomGenerator roomGenerator;
     RoomsTracker roomsTracker;
     GameObject playerInstance;
@@ -23,7 +26,23 @@ public class RoomStuff : MonoBehaviour
 
     public void SpawnRoomContents(RoomData roomData)
     {
+        if (roomsTracker == null)
+        {
+            roomsTracker = Object.FindFirstObjectByType<RoomsTracker>();
+        }
+
+        if (roomGenerator == null)
+        {
+            roomGenerator = Object.FindFirstObjectByType<RoomGenerator>();
+        }
+
         SpawnPlayer(roomData);
+
+        if (roomGenerator != null && roomGenerator.IsBossRoom)
+        {
+            SpawnBoss(roomData);
+            return;
+        }
         SpawnEnemies(roomData);
         SpawnPotion(roomData);
     }
@@ -91,7 +110,7 @@ public class RoomStuff : MonoBehaviour
 
         int enemyCount = Random.Range(minPossible, maxPossible + 1);
 
-        // Make a copy so we don't modify the original spawn points.
+        // Make a copy so it wont modify the original spawn points.
         Transform[] availablePoints =
             (Transform[])roomData.enemySpawnPoints.Clone();
 
@@ -124,6 +143,29 @@ public class RoomStuff : MonoBehaviour
 
         if (roomsTracker != null)
             roomsTracker.SetEnemyCount(spawnedCount);
+    }
+
+    void SpawnBoss(RoomData roomData)
+    {
+        if (bossPrefab == null)
+        {
+            Debug.LogError("Boss prefab is not assigned!");
+            return;
+        }
+
+        if (roomData.enemySpawnPoints == null ||
+            roomData.enemySpawnPoints.Length == 0 ||
+            roomData.enemySpawnPoints[0] == null)
+        {
+            Debug.LogError("Boss spawn point is missing!");
+            return;
+        }
+
+        Instantiate(
+            bossPrefab,
+            roomData.enemySpawnPoints[0].position,
+            roomData.enemySpawnPoints[0].rotation
+        );
     }
 
     void SpawnPotion(RoomData roomData)

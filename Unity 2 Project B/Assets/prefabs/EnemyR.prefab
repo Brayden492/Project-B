@@ -149,6 +149,7 @@ GameObject:
   - component: {fileID: 1700128100836665127}
   - component: {fileID: 5688255654506622265}
   - component: {fileID: 1817872495164523320}
+  - component: {fileID: 7424816162914596248}
   m_Layer: 5
   m_Name: EnemyHealthCanvas
   m_TagString: Untagged
@@ -240,6 +241,18 @@ MonoBehaviour:
   m_BlockingMask:
     serializedVersion: 2
     m_Bits: 4294967295
+--- !u!114 &7424816162914596248
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3519302065001248571}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d71d39ff9f0fea5489505b3f2a6e8c52, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::HealthBarLookAtPlayer
 --- !u!1 &4034723288403848860
 GameObject:
   m_ObjectHideFlags: 0
@@ -517,8 +530,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4c0e833fbcbf14a49b4963dccfbb1524, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Enemy
-  health: 20
-  maxHealth: 20
+  health: 50
+  maxHealth: 50
   healthBar: {fileID: 4222051430771799335}
   isDead: 0
   healthText: {fileID: 8847373523791944817}
@@ -537,7 +550,7 @@ MonoBehaviour:
   player: {fileID: 8519565685118313325, guid: cb4b970639a7ce543b79bfaacec26b00, type: 3}
   firePoint: {fileID: 3067563516030687013}
   projectilePrefab: {fileID: 1460723072527745534, guid: 09d8aa052ed99af4bb9daa58dcb1b25b, type: 3}
-  attackRange: 15
+  attackRange: 100
   attackWindUp: 1
   attackCooldown: 2
   attackColor: {r: 1, g: 0, b: 0, a: 1}
