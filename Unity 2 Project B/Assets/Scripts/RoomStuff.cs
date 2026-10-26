@@ -1,4 +1,3 @@
-using UnityEditor.EditorTools;
 using UnityEngine;
 
 public class RoomStuff : MonoBehaviour
@@ -19,13 +18,17 @@ public class RoomStuff : MonoBehaviour
     RoomsTracker roomsTracker;
     GameObject playerInstance;
 
+
+    // Finds the room tracker
     void Start()
     {
         roomsTracker = Object.FindFirstObjectByType<RoomsTracker>();
     }
 
+    // Spawns everything into the room
     public void SpawnRoomContents(RoomData roomData)
     {
+        // Finds room tracker and room generator
         if (roomsTracker == null)
         {
             roomsTracker = Object.FindFirstObjectByType<RoomsTracker>();
@@ -36,30 +39,36 @@ public class RoomStuff : MonoBehaviour
             roomGenerator = Object.FindFirstObjectByType<RoomGenerator>();
         }
 
+        // Spawn the player
         SpawnPlayer(roomData);
 
+        // Spawn boss 
         if (roomGenerator != null && roomGenerator.IsBossRoom)
         {
             SpawnBoss(roomData);
             return;
         }
+        //Spawn regular enemies and potion pickup
         SpawnEnemies(roomData);
         SpawnPotion(roomData);
     }
 
+    //Spawns the player into the first room and makes sure the same player gets carried over between different rooms.
     void SpawnPlayer(RoomData roomData)
     {
+        // Is spawnpoint valid
         if (roomData.playerSpawnPoint == null)
         {
-            Debug.LogWarning("Player spawn point is missing!");
+            Debug.LogWarning("Player spawn point is missing");
             return;
         }
 
+        // Create player if needed
         if (playerInstance == null)
         {
             if (playerPrefab == null)
             {
-                Debug.LogWarning("Player prefab is missing!");
+                Debug.LogWarning("Player prefab is missing");
                 return;
             }
 
@@ -71,6 +80,7 @@ public class RoomStuff : MonoBehaviour
         }
         else
         {
+            // This handles moving the player instead of spawning a new one
             CharacterController controller =
                 playerInstance.GetComponent<CharacterController>();
 
@@ -87,16 +97,19 @@ public class RoomStuff : MonoBehaviour
         }
     }
 
+    // Spawn enemies in their potential spawn locations
     void SpawnEnemies(RoomData roomData)
     {
+        // Checking that everything is found and connected
         if (enemyPrefabs == null || enemyPrefabs.Length == 0 ||
             roomData.enemySpawnPoints == null ||
             roomData.enemySpawnPoints.Length == 0)
         {
-            Debug.LogWarning("Enemy prefabs or spawn points are missing!");
+            Debug.LogWarning("Enemy prefabs or spawn points are missing");
             return;
         }
 
+        // Looking at max and min amount of enemies
         int maxPossible = Mathf.Min(
             roomData.maxEnemies,
             roomData.enemySpawnPoints.Length
@@ -108,14 +121,16 @@ public class RoomStuff : MonoBehaviour
             maxPossible
         );
 
+        // Random amount of enemies
         int enemyCount = Random.Range(minPossible, maxPossible + 1);
 
-        // Make a copy so it wont modify the original spawn points.
+        // Make a copy so it wont change the original spawn points
         Transform[] availablePoints =
             (Transform[])roomData.enemySpawnPoints.Clone();
 
         int spawnedCount = 0;
 
+        // Spawn enemy at a possible spawn location while also makign sure no same spawn point gets used twice
         for (int i = 0; i < enemyCount; i++)
         {
             int pointIndex = Random.Range(i, availablePoints.Length);
@@ -126,6 +141,7 @@ public class RoomStuff : MonoBehaviour
 
             int enemyIndex = Random.Range(0, enemyPrefabs.Length);
 
+            // Skip if prefab or spawn point is missing
             if (enemyPrefabs[enemyIndex] == null ||
                 availablePoints[i] == null)
             {
@@ -141,23 +157,27 @@ public class RoomStuff : MonoBehaviour
             spawnedCount++;
         }
 
+        // Telling room tracker how many enemies have spawned
         if (roomsTracker != null)
             roomsTracker.SetEnemyCount(spawnedCount);
     }
 
+    // Spawns boss at first spawn location that was set
     void SpawnBoss(RoomData roomData)
     {
+        //Has boss prefab been set
         if (bossPrefab == null)
         {
-            Debug.LogError("Boss prefab is not assigned!");
+            Debug.LogError("Boss prefab is not assigned");
             return;
         }
 
+        // Is spawn valid
         if (roomData.enemySpawnPoints == null ||
             roomData.enemySpawnPoints.Length == 0 ||
             roomData.enemySpawnPoints[0] == null)
         {
-            Debug.LogError("Boss spawn point is missing!");
+            Debug.LogError("Boss spawn point is missing");
             return;
         }
 
@@ -168,11 +188,15 @@ public class RoomStuff : MonoBehaviour
         );
     }
 
+
+    // Handles potion spawm
     void SpawnPotion(RoomData roomData)
     {
+
+        // Check for prefab
         if (potionPrefab == null || roomData.pickupSpawnPoint == null)
         {
-            Debug.LogWarning("Potion prefab or spawn point is missing!");
+            Debug.LogWarning("Potion prefab or spawn point is missing");
             return;
         }
 

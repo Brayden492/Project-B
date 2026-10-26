@@ -1,5 +1,4 @@
 using TMPro;
-using UnityEditor.EditorTools;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -11,11 +10,13 @@ public class Enemy : MonoBehaviour
     [SerializeField] bool isDead = false;
     public TMP_Text healthText;
 
+    //display the starting health for enemy
     void Start()
     {
         healthText.text = health.ToString();
     }
 
+    // handles a lot of health related things for enemy
     public void TakeDamage(int damage)
     {
         // check if enemy is already dead or not

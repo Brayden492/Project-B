@@ -20,17 +20,20 @@ public class HandGunFire : MonoBehaviour
 
     Animator gunAnimator;
 
+
+    // Finds the player that spawned in and builds its connections
     IEnumerator Start()
     {
         GameObject player = null;
 
+        // This makes sure the player has actually spawned in first before trying to make connections
         while (player == null)
         {
             player = GameObject.FindGameObjectWithTag("Player");
             yield return null;
         }
 
-        // Find the gun Animator under the Player's camera.
+        // Find the gun animator under the players camera
         if (handgun == null)
         {
             Camera playerCamera = player.GetComponentInChildren<Camera>();
@@ -48,7 +51,7 @@ public class HandGunFire : MonoBehaviour
         if (handgun != null)
             gunAnimator = handgun.GetComponent<Animator>();
 
-        // Find the gun's AudioSource under the Player.
+        // Find the guns audioSource under the player
         if (gunFire == null)
         {
             Transform gunFireObject = player.transform.Find("GunFireAudio");
@@ -57,10 +60,11 @@ public class HandGunFire : MonoBehaviour
                 gunFire = gunFireObject.GetComponent<AudioSource>();
         }
 
-        // Find the crosshair on the scene Canvas.
+        // Find the crosshair on the scene canvas
         if (extraCross == null)
             extraCross = GameObject.Find("extraCross");
 
+        // Lets me know if something didnt get connected
         if (gunAnimator == null)
             Debug.LogError("HandGunFire could not find the gun Animator!");
 
@@ -71,22 +75,27 @@ public class HandGunFire : MonoBehaviour
             Debug.LogWarning("HandGunFire could not find the extra crosshair!");
     }
 
+    // Gives a way to let the gun fire again
     void OnEnable()
     {
         canFire = true;
     }
+
+    // Increases damage 
     public void UpgradeDamage()
     {
         damagePerShot += 10;
-        Debug.Log("Damage upgraded to " + damagePerShot);
+        //Debug.Log("Damage upgraded to " + damagePerShot);
     }
 
+    // Faster shooting
     public void UpgradeFireRate()
     {
         shotCooldown = Mathf.Max(0.3f, shotCooldown - 0.1f);
-        Debug.Log("Shot cooldown is now " + shotCooldown);
+        //Debug.Log("Shot cooldown is now " + shotCooldown);
     }
 
+    // Shoots when it gets input from user
     void Update()
     {
         if (Input.GetMouseButton(0) && !GameComplete.gameComplete)
@@ -102,17 +111,23 @@ public class HandGunFire : MonoBehaviour
         }
     }
 
+    // Handles lots of gun related interactions
     IEnumerator FiringGun()
     {
+        // Gun sound
         if (gunFire != null)
             gunFire.Play();
 
+        // Crosshair visual to let the player know they shot
         if (extraCross != null)
             extraCross.SetActive(true);
 
+        // Play the gun animation
         if (gunAnimator != null)
             gunAnimator.Play("GunShoot");
 
+
+        // This handles doing damage
         if (objectDetection != null)
         {
             Enemy enemy =
@@ -131,6 +146,7 @@ public class HandGunFire : MonoBehaviour
             }
         }
 
+        // Gun cooldown
         yield return new WaitForSeconds(0.5f);
 
         if (gunAnimator != null)

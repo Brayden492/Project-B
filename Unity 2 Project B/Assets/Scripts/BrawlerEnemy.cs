@@ -4,9 +4,12 @@ using System.Collections;
 public class BrawlerEnemy : MonoBehaviour
 
 {
+    [Header("Player and Movement")]
     [SerializeField] Transform player;
     [SerializeField] float moveSpeed = 3f;
+    [SerializeField] float rotationSpeed = 10f;
 
+    [Header("Attack")]
     [SerializeField] float attackRange = 2f;
     [SerializeField] int attackDamage = 10;
     [SerializeField] float attackWindUp = 1f;
@@ -15,35 +18,29 @@ public class BrawlerEnemy : MonoBehaviour
     [Header("Attack Warning")]
     [SerializeField] Color attackColor = Color.red;
 
+    [Header("Animation")]
+    Animator animator;
+
     bool isAttacking = false;
 
     Renderer[] enemyRenderers;
     Material[][] enemyMaterials;
     Color[][] originalColors;
 
-    void Start()
-    {
-        if (player == null)
-        {
-            GameObject foundPlayer =
-                GameObject.FindGameObjectWithTag("Player");
-
-            if (foundPlayer != null)
-            {
-                player = foundPlayer.transform;
-            }
-            else
-            {
-                Debug.LogWarning(
-                    "BrawlerAI could not find the Player!");
-            }
-        }
-    }
-
+    // Finds the Animator and saves the original colors / materials
     void Awake()
     {
-        // Find the enemy's visible renderers,
-        // including those on child objects.
+        // Get the Animator on this enemy
+        animator = GetComponentInChildren<Animator>();
+
+        if (animator == null)
+        {
+            Debug.LogWarning(
+                "BrawlerEnemy could not find an Animator");
+        }
+
+        // Find the enemy's visible renderers
+        // including those on child objects
         enemyRenderers = GetComponentsInChildren<Renderer>();
 
         enemyMaterials = new Material[enemyRenderers.Length][];
@@ -64,6 +61,27 @@ public class BrawlerEnemy : MonoBehaviour
         }
     }
 
+    // find the player
+    void Start()
+    {
+        if (player == null)
+        {
+            GameObject foundPlayer =
+                GameObject.FindGameObjectWithTag("Player");
+
+            if (foundPlayer != null)
+            {
+                player = foundPlayer.transform;
+            }
+            else
+            {
+                Debug.LogWarning(
+                    "BrawlerEnemy could not find the Player");
+            }
+        }
+    }
+
+    // this handles looking at the player, chasing them, and attacking
     void Update()
     {
         if (player == null)
@@ -76,32 +94,80 @@ public class BrawlerEnemy : MonoBehaviour
             player.position
         );
 
+        // Turn toward the player
+        Vector3 direction = player.position - transform.position;
+        direction.y = 0f;
+
+        if (direction.sqrMagnitude > 0.001f)
+        {
+            Quaternion targetRotation = Quaternion.LookRotation(direction);
+
+            transform.rotation = Quaternion.Slerp(
+                transform.rotation,
+                targetRotation,
+                rotationSpeed * Time.deltaTime
+            );
+        }
+
+        // Do not move while performing an attack
+        if (isAttacking)
+        {
+            if (animator != null)
+            {
+                animator.SetBool("IsWalking", false);
+            }
+
+            return;
+        }
+
+        // Chase player
         if (distance > attackRange)
         {
+            // Play the walking animation
+            if (animator != null)
+            {
+                animator.SetBool("IsWalking", true);
+            }
+
             transform.position = Vector3.MoveTowards(
                 transform.position,
                 player.position,
                 moveSpeed * Time.deltaTime
             );
         }
-        else if (!isAttacking)
+        else
         {
+            // Stop walking when close enough to attack
+            if (animator != null)
+            {
+                animator.SetBool("IsWalking", false);
+            }
+
             StartCoroutine(Attack());
         }
     }
 
+    // turn red for warning, attack animation, do damage if possible
     IEnumerator Attack()
     {
         isAttacking = true;
 
-        // Warn the player by flashing red.
+        // Play the attack animation
+        if (animator != null)
+        {
+            animator.SetTrigger("Attack");
+        }
+
+        // Warn the player by flashing red
         SetEnemyColor(attackColor);
 
         yield return new WaitForSeconds(attackWindUp);
 
-        // Return the enemy to its original colors.
+        // Return the enemy to its original colors / materials
         RestoreEnemyColor();
+        
 
+        // Only do damage if the player is within a certain range
         if (player != null)
         {
             float distance = Vector3.Distance(
@@ -121,11 +187,14 @@ public class BrawlerEnemy : MonoBehaviour
             }
         }
 
+        // cooldown for attacking
         yield return new WaitForSeconds(attackCooldown);
 
         isAttacking = false;
     }
 
+
+    // this is responsible for changing the colors / materials
     void SetEnemyColor(Color newColor)
     {
         foreach (Material[] materials in enemyMaterials)
@@ -144,6 +213,7 @@ public class BrawlerEnemy : MonoBehaviour
         }
     }
 
+    // This is responsible for restoring color / material
     void RestoreEnemyColor()
     {
         for (int i = 0; i < enemyMaterials.Length; i++)

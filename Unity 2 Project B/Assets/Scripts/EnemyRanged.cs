@@ -6,6 +6,7 @@ public class EnemyRanged : MonoBehaviour
     [Header("Target")]
     [SerializeField] Transform player;
     [SerializeField] Transform firePoint;
+    [SerializeField] float rotationSpeed = 10f;
 
     [Header("Attack")]
     [SerializeField] GameObject projectilePrefab;
@@ -22,6 +23,8 @@ public class EnemyRanged : MonoBehaviour
     Material[][] enemyMaterials;
     Color[][] originalColors;
 
+
+    // Finds and assigns the player
     void Start()
     {
         if (player == null)
@@ -35,11 +38,12 @@ public class EnemyRanged : MonoBehaviour
             }
             else
             {
-                Debug.LogWarning("EnemyRanged could not find the Player!");
+                Debug.LogWarning("EnemyRanged could not find the Player");
             }
         }
     }
 
+    // saves enemies original color
     void Awake()
     {
         enemyRenderers = GetComponentsInChildren<Renderer>();
@@ -71,14 +75,17 @@ public class EnemyRanged : MonoBehaviour
         }
     }
 
+    // Check players distance, make enemy face the player, and attack when the player is within a certain range
     void Update()
     {
+        // If something is missing in references, this stops the code
         if (player == null || projectilePrefab == null
             || firePoint == null)
         {
             return;
         }
 
+        // Start attack when conditions met
         float distance = Vector3.Distance(
             transform.position, player.position);
 
@@ -86,19 +93,38 @@ public class EnemyRanged : MonoBehaviour
         {
             StartCoroutine(Attack());
         }
+
+        // Turn toward the player
+        Vector3 direction = player.position - transform.position;
+        direction.y = 0f;
+
+        if (direction.sqrMagnitude > 0.001f)
+        {
+            Quaternion targetRotation = Quaternion.LookRotation(direction);
+
+            transform.rotation = Quaternion.Slerp(
+                transform.rotation,
+                targetRotation,
+                rotationSpeed * Time.deltaTime
+            );
+        }
     }
 
+    // This handles the enemies attack
     IEnumerator Attack()
     {
         isAttacking = true;
 
+        // Changing the enemy to red as a warning for attack
         SetEnemyColor(attackColor);
 
-        // Give the player time to react.
+        // Give the player time to react
         yield return new WaitForSeconds(attackWindUp);
-
+        
+        // Change color back to normal
         RestoreEnemyColor();
 
+        // Check if player is within range
         if (player != null)
         {
             float distance = Vector3.Distance(
@@ -106,15 +132,17 @@ public class EnemyRanged : MonoBehaviour
 
             if (distance <= attackRange)
             {
-                // Aim toward the player's current position.
+                // Aim toward the player's current position
                 Vector3 direction =
                     player.position - firePoint.position;
-
+                
+                // Create projectile
                 GameObject projectile = Instantiate(
                     projectilePrefab,
                     firePoint.position,
                     Quaternion.LookRotation(direction));
 
+                // Prevent enemy from shooting itself
                 Collider projectileCollider =
                     projectile.GetComponent<Collider>();
 
@@ -132,6 +160,7 @@ public class EnemyRanged : MonoBehaviour
                     }
                 }
 
+                // Shoot the projectile
                 Projectile projectileScript =
                     projectile.GetComponent<Projectile>();
 
@@ -143,16 +172,18 @@ public class EnemyRanged : MonoBehaviour
                 {
                     Destroy(projectile);
                     Debug.LogWarning(
-                        "Projectile prefab is missing EnemyProjectile!");
+                        "Projectile prefab is missing EnemyProjectile");
                 }
             }
         }
 
+        // Cooldown
         yield return new WaitForSeconds(attackCooldown);
 
         isAttacking = false;
     }
 
+    //Responisble for changing color
     void SetEnemyColor(Color newColor)
     {
         foreach (Material[] materials in enemyMaterials)
@@ -171,6 +202,7 @@ public class EnemyRanged : MonoBehaviour
         }
     }
 
+    //Responsible for restoring original color
     void RestoreEnemyColor()
     {
         for (int i = 0; i < enemyMaterials.Length; i++)

@@ -302,7 +302,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &1892224164606358519
 Transform:
   m_ObjectHideFlags: 0
@@ -436,6 +436,7 @@ Transform:
   - {fileID: 7738534107223944005}
   - {fileID: 1892224164606358519}
   - {fileID: 3067563516030687013}
+  - {fileID: 3901391738537010668}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!33 &8351975099709104667
@@ -549,6 +550,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::EnemyRanged
   player: {fileID: 8519565685118313325, guid: cb4b970639a7ce543b79bfaacec26b00, type: 3}
   firePoint: {fileID: 3067563516030687013}
+  rotationSpeed: 10
   projectilePrefab: {fileID: 1460723072527745534, guid: 09d8aa052ed99af4bb9daa58dcb1b25b, type: 3}
   attackRange: 100
   attackWindUp: 1
@@ -656,3 +658,65 @@ MonoBehaviour:
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
   m_PixelsPerUnitMultiplier: 1
+--- !u!1001 &3539344109874638673
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    serializedVersion: 3
+    m_TransformParent: {fileID: 6591163042063029089}
+    m_Modifications:
+    - target: {fileID: 520941645350734525, guid: cb44c97f074e8374880f406f562006cd, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 520941645350734525, guid: cb44c97f074e8374880f406f562006cd, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: -0.92
+      objectReference: {fileID: 0}
+    - target: {fileID: 520941645350734525, guid: cb44c97f074e8374880f406f562006cd, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 520941645350734525, guid: cb44c97f074e8374880f406f562006cd, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 520941645350734525, guid: cb44c97f074e8374880f406f562006cd, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 520941645350734525, guid: cb44c97f074e8374880f406f562006cd, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 520941645350734525, guid: cb44c97f074e8374880f406f562006cd, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 520941645350734525, guid: cb44c97f074e8374880f406f562006cd, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 520941645350734525, guid: cb44c97f074e8374880f406f562006cd, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 520941645350734525, guid: cb44c97f074e8374880f406f562006cd, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6344775542004939383, guid: cb44c97f074e8374880f406f562006cd, type: 3}
+      propertyPath: m_Name
+      value: SkeletonLich_II
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+    m_RemovedGameObjects: []
+    m_AddedGameObjects: []
+    m_AddedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: cb44c97f074e8374880f406f562006cd, type: 3}
+--- !u!4 &3901391738537010668 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 520941645350734525, guid: cb44c97f074e8374880f406f562006cd, type: 3}
+  m_PrefabInstance: {fileID: 3539344109874638673}
+  m_PrefabAsset: {fileID: 0}
